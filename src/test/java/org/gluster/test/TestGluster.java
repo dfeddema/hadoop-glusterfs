@@ -343,6 +343,8 @@ public class TestGluster{
 	        				FsAction.READ_EXECUTE,
 	        				FsAction.READ_EXECUTE,
 	        				FsAction.READ_EXECUTE));
+	        
+	        //And confirm that the changed permissions were persisted.
 	        Assert.assertEquals(gfs.getFileStatus(file1).getPermission().getOtherAction(),FsAction.READ_EXECUTE);
 		}
 }
