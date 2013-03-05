@@ -33,7 +33,6 @@ import java.net.URI;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
-import org.apache.hadoop.HadoopVersionAnnotation;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.BlockLocation;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -44,7 +43,7 @@ import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.util.Progressable;
-import org.apache.hadoop.util.StringUtils;
+import org.apache.hadoop.util.Shell;
 
 /*
  * This package provides interface for hadoop jobs (incl. Map/Reduce)
@@ -343,7 +342,27 @@ public class GlusterFileSystem extends FileSystem {
 	    }
 	  }
 	
-	private class FUSEFileStatus extends RawLocalFileStatus{
+	 /** Convert a path to a File. */
+	  public File pathToFile(Path path) {
+	    checkPath(path);
+	    if (!path.isAbsolute()) {
+	      path = new Path(getWorkingDirectory(), path);
+	    }
+	    return new File(path.toUri().getPath());
+	  }
+	  
+	 /**
+	  * Use the command chmod to set permission.
+	  */
+	  @Override
+	  public void setPermission(Path p, FsPermission permission)
+	    throws IOException {
+		  //taken from existing hadoop diom.
+		  org.apache.hadoop.util.Shell.execCommand("chmod",String.format("%05o", permission.toShort()),p.toUri().getPath());
+	  }
+
+
+	  private class FUSEFileStatus extends RawLocalFileStatus{
 		File theFile;
 		Path path;
 		boolean isdir;
