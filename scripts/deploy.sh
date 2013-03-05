@@ -1,5 +1,4 @@
 #A Shell script for testing on VMs
-#RHS-1 VM-2 VM-3 /var/lib/hadoop
 echo "Edit the branch value in this script to test a different branch"
 export BRANCH=BZXXXX #Replace XXXX with the branch you intend to deploy.
 git pull
@@ -11,4 +10,5 @@ echo "Now copying jar to VMs"
 scp glustertest$BRANCH.jar server-1:/usr/lib/hadoop/lib/a0glusterfs.jar
 scp glustertest$BRANCH.jar server-2:/usr/lib/hadoop/lib/a0glusterfs.jar
 scp glustertest$BRANCH.jar server-3:/usr/lib/hadoop/lib/a0glusterfs.jar
+#...
 echo "Done copying priority named jar to servers"
