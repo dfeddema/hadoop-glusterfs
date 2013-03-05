@@ -41,6 +41,8 @@ import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.glusterfs.GlusterFileSystem;
+import org.apache.hadoop.fs.permission.FsAction;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.tools.ant.util.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -331,8 +333,16 @@ public class TestGluster{
 	        Path file1 = new Path("tPERM/foo");
 	        gfs.create(file1);
 	        assertTrue(gfs.exists(file1));
-	        System.out.println(gfs.getFileStatus(file1).getPermission().getGroupAction());
-	        System.out.println(gfs.getFileStatus(file1).getPermission().getUserAction());
-	        System.out.println(gfs.getFileStatus(file1).getPermission().getOtherAction());
+	        Assert.assertEquals(gfs.getFileStatus(file1).getPermission().getGroupAction(),FsAction.READ);
+	        Assert.assertEquals(gfs.getFileStatus(file1).getPermission().getUserAction(),FsAction.READ_WRITE);
+	        Assert.assertEquals(gfs.getFileStatus(file1).getPermission().getOtherAction(),FsAction.READ);
+	        
+	        //Now we change the permissions again.
+	        gfs.setPermission(file1, 
+	        		new FsPermission(
+	        				FsAction.READ_EXECUTE,
+	        				FsAction.READ_EXECUTE,
+	        				FsAction.READ_EXECUTE));
+	        Assert.assertEquals(gfs.getFileStatus(file1).getPermission().getOtherAction(),FsAction.READ_EXECUTE);
 		}
 }
