@@ -359,9 +359,12 @@ public class GlusterFileSystem extends FileSystem {
 	    throws IOException {
 			File f = new File(p.toUri().getPath());
 
-		  //taken from existing hadoop diom.
-		  org.apache.hadoop.util.Shell.execCommand("chmod",String.format("%05o", permission.toShort()),f.toURI().toString());
+
+ 		  //taken from existing hadoop diom.
+		  		  org.apache.hadoop.util.Shell.execCommand("chmod",String.format("%05o", permission.toShort()),f.getPath());
+
 	  }
+
 
 
 	  private class FUSEFileStatus extends RawLocalFileStatus{
