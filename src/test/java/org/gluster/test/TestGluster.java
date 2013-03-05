@@ -332,8 +332,7 @@ public class TestGluster{
 		public void testPermissions() throws Exception{
 	        Path file1 = new Path("tPERM/foo");
 	        gfs.create(file1);
-	        
-	        
+
 	        assertTrue(gfs.exists(file1));
 	        Assert.assertEquals(gfs.getFileStatus(file1).getPermission().getGroupAction(),FsAction.READ);
 	        Assert.assertEquals(gfs.getFileStatus(file1).getPermission().getUserAction(),FsAction.READ_WRITE);
@@ -341,12 +340,17 @@ public class TestGluster{
 
 	        assertTrue(gfs.exists(file1));
 	        //Now we change the permissions again.
-	        gfs.setPermission(file1, 
+	        try{
+	        	gfs.setPermission(gfs.getFileStatus(file1).getPath(), 
 	        		new FsPermission(
 	        				FsAction.READ_EXECUTE,
 	        				FsAction.READ_EXECUTE,
 	        				FsAction.READ_EXECUTE));
-	        
+	        }
+	        catch(Throwable t){
+	        	t.printStackTrace();
+	        	throw new RuntimeException("file:" + file1 + ", with uri:" + file1.toUri() + " not available."  + t.getMessage());
+	        }
 	        //And confirm that the changed permissions were persisted.
 	        Assert.assertEquals(gfs.getFileStatus(file1).getPermission().getOtherAction(),FsAction.READ_EXECUTE);
 		}
