@@ -357,8 +357,10 @@ public class GlusterFileSystem extends FileSystem {
 	  @Override
 	  public void setPermission(Path p, FsPermission permission)
 	    throws IOException {
+			File f = new File(p.toUri().getPath());
+
 		  //taken from existing hadoop diom.
-		  org.apache.hadoop.util.Shell.execCommand("chmod",String.format("%05o", permission.toShort()),p.toUri().getPath());
+		  org.apache.hadoop.util.Shell.execCommand("chmod",String.format("%05o", permission.toShort()),f.toURI().toString());
 	  }
 
 
