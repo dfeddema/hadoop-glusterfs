@@ -332,11 +332,14 @@ public class TestGluster{
 		public void testPermissions() throws Exception{
 	        Path file1 = new Path("tPERM/foo");
 	        gfs.create(file1);
+	        
+	        
 	        assertTrue(gfs.exists(file1));
 	        Assert.assertEquals(gfs.getFileStatus(file1).getPermission().getGroupAction(),FsAction.READ);
 	        Assert.assertEquals(gfs.getFileStatus(file1).getPermission().getUserAction(),FsAction.READ_WRITE);
 	        Assert.assertEquals(gfs.getFileStatus(file1).getPermission().getOtherAction(),FsAction.READ);
-	        
+
+	        assertTrue(gfs.exists(file1));
 	        //Now we change the permissions again.
 	        gfs.setPermission(file1, 
 	        		new FsPermission(
