@@ -200,15 +200,25 @@ public class GlusterFileSystem extends FileSystem{
      * org.apache.hadoop.fs.RawLocalFileSystem#mkdirs(org.apache.hadoop.fs.Path)
      * as incremental fix towards a re-write. of this class to remove duplicity.
      */
-    public boolean mkdirs(Path f,FsPermission permission) throws IOException{
-
-        if(f==null)
-            return true;
-
-        Path parent=f.getParent();
-        Path absolute=makeAbsolute(f);
-        File p2f=new File(absolute.toUri().getPath());
-        return (f==null||mkdirs(parent))&&(p2f.mkdir()||p2f.isDirectory());
+    public boolean mkdirs(Path path,FsPermission permission) throws IOException{
+      
+            /* had to unspin recursion for the locking */
+            String split[]=path.toString().split(Path.SEPARATOR);
+            String current="";
+            boolean success=true;
+            for(int i=0;i<split.length&&success;i++){
+                current+=split[i]+Path.SEPARATOR;
+                Path absolute=makeAbsolute(new Path(current));
+                File p2f=new File(absolute.toUri().getPath());
+                if(!p2f.exists()){
+                    p2f.mkdirs();
+                    setPermission(new Path(current), permission);
+                }
+                success=p2f.exists();
+            }
+       
+            return success;
+       
     }
 
     @Deprecated
@@ -368,6 +378,9 @@ public class GlusterFileSystem extends FileSystem{
      */
     @Override
     public void setPermission(Path p,FsPermission permission){
+        
+        if(permission==null) return;
+        
         try{
             Path absolute=makeAbsolute(p);
             final File f=new File(absolute.toUri().getPath());
@@ -406,7 +419,7 @@ public class GlusterFileSystem extends FileSystem{
         Path absolute=makeAbsolute(path);
         Path parent=null;
         File f=null;
-        File fParent=null;
+      
         FSDataOutputStream glusterFileStream=null;
 
         f=new File(absolute.toUri().getPath());
@@ -419,7 +432,10 @@ public class GlusterFileSystem extends FileSystem{
         }
 
         parent=path.getParent();
-        mkdirs(parent);
+        mkdirs(parent, permission);
+        
+        f.createNewFile();
+        setPermission(path, permission);
 
         glusterFileStream=new FSDataOutputStream(new GlusterFUSEOutputStream(f.getPath(), false));
 
@@ -491,6 +507,8 @@ public class GlusterFileSystem extends FileSystem{
         if(dirEntries!=null)
             for(int i=0;i<dirEntries.length;i++)
                 delete(new Path(absolute, dirEntries[i].getPath()), recursive);
+        
+        
 
         return f.delete();
     }
