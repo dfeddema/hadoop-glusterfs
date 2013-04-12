@@ -202,7 +202,6 @@ public class GlusterFileSystem extends FileSystem{
      */
     public boolean mkdirs(Path path,FsPermission permission) throws IOException{
       
-            /* had to unspin recursion for the locking */
             String split[]=path.toString().split(Path.SEPARATOR);
             String current="";
             boolean success=true;
@@ -507,9 +506,7 @@ public class GlusterFileSystem extends FileSystem{
         if(dirEntries!=null)
             for(int i=0;i<dirEntries.length;i++)
                 delete(new Path(absolute, dirEntries[i].getPath()), recursive);
-        
-        
-
+   
         return f.delete();
     }
 
