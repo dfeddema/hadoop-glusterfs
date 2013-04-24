@@ -306,14 +306,18 @@ public class GlusterFileSystem extends FileSystem{
          */
         @Override
         public String getOwner(){
-            try{
-                return FileInfoUtil.getLSinfo(theFile.getAbsolutePath()).get("owner");
-            }catch (Exception e){
-                throw new RuntimeException(e);
-            }
+             loadPermissionInfo();
+             return super.getOwner();
         }
+        
 
-        public FsPermission getPermission(){
+		@Override
+		public String getGroup() {
+            loadPermissionInfo();
+			return super.getGroup();
+		}
+
+		public FsPermission getPermission(){
             // should be amortized, see method.
             loadPermissionInfo();
             return super.getPermission();
@@ -330,7 +334,7 @@ public class GlusterFileSystem extends FileSystem{
             try{
                 String output;
                 StringTokenizer t=new StringTokenizer(output=execCommand(theFile, Shell.getGET_PERMISSION_COMMAND()));
-
+                System.out.println(output);
                 // log.info("Output of PERMISSION command = " + output
                 // + " for " + this.getPath());
                 // expected format
@@ -576,8 +580,31 @@ public class GlusterFileSystem extends FileSystem{
         return result;
     }
 
+    /**
+     * Adopted from {@link org.apache.hadoop.RawLocalFileSystem}, so that group privileges are
+     * set properly when hadoop fs chwon is called in {@link org.apache.hadoop.fs.FSShellPermissions}.
+     */
+    @Override
+    public void setOwner(Path p, String username, String groupname) throws IOException {
+        Path absolute=makeAbsolute(p);
+        File f=new File(absolute.toUri().getPath());
+
+    	if (username == null && groupname == null) {
+    	  throw new IOException("username == null && groupname == null");
+      }
+
+      if (username == null) {
+        execCommand(f, Shell.SET_GROUP_COMMAND, groupname); 
+      } 
+      else {
+        //OWNER[:[GROUP]]
+        String s = username + (groupname == null? "": ":" + groupname);
+        execCommand(f, Shell.SET_OWNER_COMMAND, s);
+      }
+    }
+    
     public void copyFromLocalFile(boolean delSrc,Path src,Path dst) throws IOException{
-        FileUtil.copy(glusterFs, src, this, dst, delSrc, getConf());
+    	FileUtil.copy(glusterFs, src, this, dst, delSrc, getConf());
     }
 
     public void copyToLocalFile(boolean delSrc,Path src,Path dst) throws IOException{

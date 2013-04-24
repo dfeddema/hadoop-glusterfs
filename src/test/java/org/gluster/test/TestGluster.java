@@ -196,6 +196,28 @@ public class TestGluster{
         assertFalse(gfs.exists(new Path("test1")));
     }
 
+    @Test
+    public void testGroupOwnership() throws Exception{
+        Path myFile=new Path("filePerm.txt");
+        //Create a file 
+        gfs.create(myFile);
+        
+        //Set the initial owner
+        gfs.setOwner(myFile, "daemon", "root");
+        String oldOwner = gfs.getFileStatus(myFile).getOwner(); 
+        String oldGroup = gfs.getFileStatus(myFile).getGroup();
+        Assert.assertEquals("daemon",oldOwner);
+        Assert.assertEquals("root",oldGroup);
+        
+        //Now, change it to "root" "wheel" 
+        gfs.setOwner(myFile, "root", "wheel");
+        String newOwner = gfs.getFileStatus(myFile).getOwner(); 
+        String newGroup = gfs.getFileStatus(myFile).getGroup();
+        Assert.assertEquals("root",newOwner);
+        Assert.assertEquals("wheel",newGroup);
+        
+    }
+    
     @org.junit.Test
     public void testPermissions() throws Exception{
 
