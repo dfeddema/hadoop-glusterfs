@@ -334,7 +334,6 @@ public class GlusterFileSystem extends FileSystem{
             try{
                 String output;
                 StringTokenizer t=new StringTokenizer(output=execCommand(theFile, Shell.getGET_PERMISSION_COMMAND()));
-                System.out.println(output);
                 // log.info("Output of PERMISSION command = " + output
                 // + " for " + this.getPath());
                 // expected format
