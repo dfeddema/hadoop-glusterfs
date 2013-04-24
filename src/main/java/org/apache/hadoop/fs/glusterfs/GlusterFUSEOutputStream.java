@@ -19,6 +19,7 @@
 
 package org.apache.hadoop.fs.glusterfs;
 
+<<<<<<< HEAD
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,12 +28,20 @@ import java.io.OutputStream;
 /**
  * An OutputStream for writing to a FUSE mount intended for use with gluster. 
  */
+=======
+import java.io.*;
+
+>>>>>>> 763688aca33e38f321595a161bfe7b01c13f9f1e
 public class GlusterFUSEOutputStream extends OutputStream{
     File f;
     long pos;
     boolean closed;
     OutputStream fuseOutputStream;
     org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(GlusterFUSEOutputStream.class);
+<<<<<<< HEAD
+=======
+  
+>>>>>>> 763688aca33e38f321595a161bfe7b01c13f9f1e
     public GlusterFUSEOutputStream(String file, boolean append) throws IOException{
         this(file,append,0);
     }
@@ -49,6 +58,12 @@ public class GlusterFUSEOutputStream extends OutputStream{
         this.closed=false;
     }
     
+    
+=======
+        if(bufferSize > 0)
+        	fuseOutputStream = new BufferedOutputStream(fuseOutputStream, bufferSize);
+        this.closed=false;
+    }
     
     public long getPos() throws IOException{
         return pos;
