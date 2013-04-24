@@ -37,6 +37,6 @@
 
   <property>
     <name>fs.glusterfs.write.buffer.size</name>
-    <value>100</value>
+    <value>1024</value>
   </property>
 </configuration>
