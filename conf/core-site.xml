@@ -36,7 +36,12 @@
   </property>
 
   <property>
+<<<<<<< HEAD
   <name>fs.glusterfs.write.buffer.size</name>
   <value>1024</value>
+=======
+    <name>fs.glusterfs.write.buffer.size</name>
+    <value>1024</value>
+>>>>>>> permissions
   </property>
 </configuration>
