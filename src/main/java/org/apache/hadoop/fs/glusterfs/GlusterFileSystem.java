@@ -454,7 +454,7 @@ public class GlusterFileSystem extends FileSystem{
         if(!f.exists())
             throw new IOException("File "+f.getPath()+" does not exist.");
 
-        glusterFileStream=new FSDataInputStream(new GlusterFUSEInputStream(f, hnts, hostname));
+        glusterFileStream=new FSDataInputStream(new GlusterFUSEInputStream(f));
         return glusterFileStream;
     }
 

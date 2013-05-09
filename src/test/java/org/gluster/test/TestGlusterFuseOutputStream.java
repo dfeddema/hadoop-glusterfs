@@ -2,12 +2,9 @@ package org.gluster.test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.TreeMap;
 
 import junit.framework.Assert;
 
-import org.apache.hadoop.fs.glusterfs.GlusterFSBrickClass;
-import org.apache.hadoop.fs.glusterfs.GlusterFUSEInputStream;
 import org.apache.hadoop.fs.glusterfs.GlusterFUSEOutputStream;
 import org.junit.Test;
 

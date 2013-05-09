@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.TreeMap;
 
 import org.apache.hadoop.fs.glusterfs.GlusterFSBrickClass;
-import org.apache.hadoop.fs.glusterfs.GlusterFUSEInputStream;
 import org.junit.Test;
 
 public class TestGlusterFuseInputStream{
