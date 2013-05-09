@@ -19,11 +19,12 @@
 
 package org.apache.hadoop.fs.glusterfs;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.TreeMap;
 
 import org.apache.hadoop.fs.FSInputStream;
-import org.apache.hadoop.fs.FileSystem;
 
 public class GlusterFUSEInputStream extends FSInputStream{
     File f;
@@ -52,7 +53,7 @@ public class GlusterFUSEInputStream extends FSInputStream{
         if(this.hnts!=null){
             directFilePath=findLocalFile(f.getPath(), this.hnts);
             if(directFilePath!=null){
-                this.fsInputStream=new RandomAccessFile(directFilePath, "r");
+                this.fsInputStream=new BufferedRandomAccessFile(new File(directFilePath), "r");
                 this.lastActive=!this.lastActive;
             }
         }
