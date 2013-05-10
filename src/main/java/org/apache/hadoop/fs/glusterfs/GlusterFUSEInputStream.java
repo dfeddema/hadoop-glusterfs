@@ -19,20 +19,19 @@
 
 package org.apache.hadoop.fs.glusterfs;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.apache.hadoop.fs.FSError;
 import org.apache.hadoop.fs.FSInputStream;
-import org.apache.hadoop.fs.Path;
 
 /*******************************************************
  * For open()'s FSInputStream
  *******************************************************/
 class GlusterFUSEInputStream extends FSInputStream {
-  FileInputStream fis;
+  BufferedInputStream fis;
   private long position;
   class TrackingFileInputStream extends FileInputStream {
 	    public TrackingFileInputStream(File f) throws IOException {
@@ -62,14 +61,9 @@ class GlusterFUSEInputStream extends FSInputStream {
 	  }
 
   public GlusterFUSEInputStream(File f) throws IOException {
-    this.fis = new TrackingFileInputStream(f);
+    this.fis = new BufferedInputStream(new TrackingFileInputStream(f),65536);
   }
-  
-  public void seek(long pos) throws IOException {
-    fis.getChannel().position(pos);
-    this.position = pos;
-  }
-  
+   
   public long getPos() throws IOException {
     return this.position;
   }
@@ -108,17 +102,7 @@ class GlusterFUSEInputStream extends FSInputStream {
       throw new RuntimeException(e);                   // assume native fs error
     }
   }
-  
-  public int read(long position, byte[] b, int off, int len)
-    throws IOException {
-    ByteBuffer bb = ByteBuffer.wrap(b, off, len);
-    try {
-      return fis.getChannel().read(bb, position);
-    } catch (IOException e) {
-    	throw new RuntimeException(e); 
-    }
-  }
-  
+   
   public long skip(long n) throws IOException {
     long value = fis.skip(n);
     if (value > 0) {
@@ -126,4 +110,9 @@ class GlusterFUSEInputStream extends FSInputStream {
     }
     return value;
   }
+
+@Override
+public void seek(long arg0) throws IOException {
+	throw new RuntimeException("Unsupported seek operation");
+}
 }
