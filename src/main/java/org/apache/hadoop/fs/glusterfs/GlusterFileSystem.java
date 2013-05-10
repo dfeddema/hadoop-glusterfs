@@ -128,6 +128,11 @@ public class GlusterFileSystem extends FileSystem{
             if((volName.length()==0)||(remoteGFSServer.length()==0)||(glusterMount.length()==0))
                 throw new RuntimeException("Not enough info for FUSE Mount : volname="+volName+",server="+remoteGFSServer+",glustermount="+glusterMount);
 
+            ret=FUSEMount(volName, remoteGFSServer, glusterMount);
+
+            if(!ret){
+                throw new RuntimeException("Failed to init Gluster FS");
+            }
             if(autoMount){
                 ret=FUSEMount(volName, remoteGFSServer, glusterMount);
                 if(!ret){
@@ -518,6 +523,10 @@ public class GlusterFileSystem extends FileSystem{
             throw new IOException(f.getPath()+" does not exist.");
 
         return xattr.getReplication(f.getPath());
+    }
+
+    public boolean setReplication(Path path,short replication) throws IOException{
+        return true;
     }
 
     public long getBlockSize(Path path) throws IOException{
