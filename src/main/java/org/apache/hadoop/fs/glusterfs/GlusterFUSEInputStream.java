@@ -38,7 +38,7 @@ public class GlusterFUSEInputStream extends FSInputStream{
     GlusterFSBrickClass thisBrick;
     int nodeLocation;
     TreeMap<Integer, GlusterFSBrickClass> hnts;
-    static int length = 65536;//128m
+    public static int LENGTH= 65536;//128m
     public GlusterFUSEInputStream(File f, TreeMap<Integer, GlusterFSBrickClass> hnts, String hostname) throws IOException{
         this.f=f;
         this.pos=0;
@@ -47,7 +47,7 @@ public class GlusterFUSEInputStream extends FSInputStream{
         this.thisHost=hostname;
         this.fsInputStream=null;
         this.fuseInputStream=new RandomAccessFile(f, "rw").getChannel().map(
-                FileChannel.MapMode.READ_ONLY, 0, length);
+                FileChannel.MapMode.READ_ONLY, 0, LENGTH);
         this.lastActive=true; // true == FUSE, false == backed file
 
         String directFilePath=null;
@@ -118,7 +118,6 @@ public class GlusterFUSEInputStream extends FSInputStream{
         int[] nlen={1};
 
         in=chooseStream(getPos(), nlen);
-
         byteRead=in.get();
         if(byteRead>=0){
             pos++;
